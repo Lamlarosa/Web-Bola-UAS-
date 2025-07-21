@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Moon, Sun, LogOut, User, Heart, Trophy, Home, Filter } from 'lucide-react';
+import { Moon, Sun, LogOut, User, Heart, Home, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const Navbar: React.FC = () => {
@@ -14,15 +14,9 @@ export const Navbar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/categories', label: 'Categories', icon: Filter },
-    ...(isAuthenticated 
-      ? [
-          { path: '/standings', label: 'Standings', icon: Trophy },
-          { path: '/favorites', label: 'Favorites', icon: Heart },
-        ]
-      : []
-    ),
+    { path: '/', label: 'Beranda', icon: Home },
+    { path: '/categories', label: 'Kategori', icon: Filter },
+    { path: '/favorites', label: 'Favorit', icon: Heart }, // ← selalu tampil
   ];
 
   return (
@@ -34,7 +28,7 @@ export const Navbar: React.FC = () => {
             <div className="w-3 h-3 border-2 border-white rounded-full"></div>
           </div>
           <span className="font-bold text-xl bg-gradient-field bg-clip-text text-transparent">
-            FootballApp
+            My Football
           </span>
         </Link>
 
@@ -47,8 +41,8 @@ export const Navbar: React.FC = () => {
               asChild
               className={cn(
                 "transition-all duration-200",
-                isActive(path) 
-                  ? "bg-primary text-primary-foreground shadow-field" 
+                isActive(path)
+                  ? "bg-primary text-primary-foreground shadow-field"
                   : "hover:bg-accent hover:text-accent-foreground"
               )}
             >
@@ -84,14 +78,14 @@ export const Navbar: React.FC = () => {
                 className="flex items-center space-x-2 hover:bg-destructive hover:text-destructive-foreground border-destructive/20"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Logout</span>
+                <span className="hidden sm:inline">Keluar</span>
               </Button>
             </div>
           ) : (
             <Button variant="default" asChild className="bg-gradient-field hover:shadow-field">
               <Link to="/login" className="flex items-center space-x-2">
                 <User className="w-4 h-4" />
-                <span>Login</span>
+                <span>Masuk</span>
               </Link>
             </Button>
           )}
@@ -110,8 +104,8 @@ export const Navbar: React.FC = () => {
                 asChild
                 className={cn(
                   "flex-1 mx-1 transition-all duration-200",
-                  isActive(path) 
-                    ? "bg-primary text-primary-foreground" 
+                  isActive(path)
+                    ? "bg-primary text-primary-foreground"
                     : "hover:bg-accent"
                 )}
               >

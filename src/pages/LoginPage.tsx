@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,7 @@ export default function LoginPage() {
   const { login, isAuthenticated, isLoading } = useAuth();
   const { toast } = useToast();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const from = location.state?.from?.pathname || '/';
 
@@ -31,29 +32,29 @@ export default function LoginPage() {
     setError('');
 
     if (!username || !password) {
-      setError('Please fill in all fields');
+      setError('Silakan isi semua kolom');
       return;
     }
 
     const success = await login(username, password);
-    
+
     if (success) {
       toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
+        title: "Selamat Datang",
+        description: "Anda telah berhasil login.",
       });
     } else {
-      setError('Invalid username or password');
+      setError('Nama pengguna atau kata sandi tidak valid');
       toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
+        title: "Login Gagal",
+        description: "Silakan periksa kredensial Anda dan coba lagi.",
         variant: "destructive",
       });
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-stadium p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-stadium p-4">
       <div className="w-full max-w-md">
         <Card className="shadow-card-hover border-border/50 bg-card/95 backdrop-blur">
           <CardHeader className="space-y-4 text-center">
@@ -62,10 +63,10 @@ export default function LoginPage() {
             </div>
             <div>
               <CardTitle className="text-2xl font-bold bg-gradient-field bg-clip-text text-transparent">
-                Football App
+                Dunia Bola
               </CardTitle>
               <p className="text-muted-foreground mt-2">
-                Sign in to access premium features
+                Masuk untuk Mengakses Semua Fitur
               </p>
             </div>
           </CardHeader>
@@ -87,7 +88,7 @@ export default function LoginPage() {
                   <Input
                     id="username"
                     type="text"
-                    placeholder="Enter username"
+                    placeholder="Masukkan username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     className="pl-10 transition-all duration-200 focus:ring-primary focus:border-primary"
@@ -105,7 +106,7 @@ export default function LoginPage() {
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter password"
+                    placeholder="Masukkan password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 pr-10 transition-all duration-200 focus:ring-primary focus:border-primary"
@@ -136,7 +137,7 @@ export default function LoginPage() {
                 {isLoading ? (
                   <LoadingSpinner size="sm" text="" />
                 ) : (
-                  'Sign In'
+                  'Login'
                 )}
               </Button>
             </form>
@@ -149,12 +150,12 @@ export default function LoginPage() {
                   <span className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Demo Account</span>
+                  <span className="bg-card px-2 text-muted-foreground">Akun Demo</span>
                 </div>
               </div>
-              
+
               <div className="text-center space-y-2 p-4 bg-accent-muted rounded-lg border border-accent/20">
-                <p className="text-sm font-medium text-accent-foreground">Try Demo Account:</p>
+                <p className="text-sm font-medium text-accent-foreground">Coba Akun Demo Berikut:</p>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <span className="text-muted-foreground">Username:</span>
@@ -169,6 +170,15 @@ export default function LoginPage() {
             </div>
           </CardFooter>
         </Card>
+
+        {/* Tombol kembali ke beranda */}
+        <Button
+          variant="ghost"
+          onClick={() => navigate('/')}
+          className="mt-6 text-sm text-primary hover:underline mx-auto block"
+        >
+          ← Kembali ke Beranda
+        </Button>
       </div>
     </div>
   );

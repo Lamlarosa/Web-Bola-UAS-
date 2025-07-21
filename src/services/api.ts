@@ -11,7 +11,7 @@ export const api = axios.create({
   },
 });
 
-// Types for API responses
+// Types
 export interface League {
   id: number;
   name: string;
@@ -88,8 +88,19 @@ export const footballApi = {
   // Get all leagues
   getLeagues: async (): Promise<League[]> => {
     try {
-      const response = await api.get<ApiResponse<League[]>>('/leagues');
-      return response.data.response || [];
+      const response = await api.get<ApiResponse<any[]>>('/leagues');
+      const leagues = response.data.response.map((item) => ({
+        id: item.league.id,
+        name: item.league.name,
+        country: item.country.name,
+        logo: item.league.logo,
+        flag: item.country.flag,
+        season:
+          item.seasons?.find((s: any) => s.current && s.year <= 2023)?.year ||
+          item.seasons?.filter((s: any) => s.year <= 2023).sort((a: any, b: any) => b.year - a.year)[0]?.year ||
+          2023,
+      }));
+      return leagues;
     } catch (error) {
       console.error('Error fetching leagues:', error);
       throw new Error('Failed to fetch leagues');
@@ -99,36 +110,55 @@ export const footballApi = {
   // Get leagues by country
   getLeaguesByCountry: async (country: string): Promise<League[]> => {
     try {
-      const response = await api.get<ApiResponse<League[]>>(`/leagues?country=${country}`);
-      return response.data.response || [];
+      const response = await api.get<ApiResponse<any[]>>(`/leagues?country=${country}`);
+      const leagues = response.data.response.map((item) => ({
+        id: item.league.id,
+        name: item.league.name,
+        country: item.country.name,
+        logo: item.league.logo,
+        flag: item.country.flag,
+        season: item.seasons?.find((s: any) => s.current)?.year || 2023,
+      }));
+      return leagues;
     } catch (error) {
       console.error('Error fetching leagues by country:', error);
       throw new Error('Failed to fetch leagues by country');
     }
   },
 
-  // Get standings by league and season
+  // Get standings
   getStandings: async (leagueId: number, season: number = 2023): Promise<Standing[]> => {
     try {
-      const response = await api.get<ApiResponse<{ league: any; standings: Standing[][] }[]>>(
+      const response = await api.get<ApiResponse<any[]>>(
         `/standings?league=${leagueId}&season=${season}`
       );
-      
-      if (response.data.response && response.data.response.length > 0) {
-        return response.data.response[0].standings[0] || [];
+
+      const res = response.data.response;
+
+      // Validate response structure
+      if (
+        Array.isArray(res) &&
+        res.length > 0 &&
+        res[0]?.league?.standings &&
+        Array.isArray(res[0].league.standings[0])
+      ) {
+        return res[0].league.standings[0]; // type: Standing[]
+      } else {
+        console.warn('Standings not found or invalid structure', res);
+        return [];
       }
-      return [];
     } catch (error) {
       console.error('Error fetching standings:', error);
       throw new Error('Failed to fetch standings');
     }
   },
 
-  // Get team information
+  // Get team by ID
   getTeam: async (teamId: number): Promise<Team | null> => {
     try {
-      const response = await api.get<ApiResponse<Team[]>>(`/teams?id=${teamId}`);
-      return response.data.response?.[0] || null;
+      const response = await api.get<ApiResponse<{ team: Team }[]>>(`/teams?id=${teamId}`);
+      const teamData = response.data.response?.[0]?.team;
+      return teamData || null;
     } catch (error) {
       console.error('Error fetching team:', error);
       throw new Error('Failed to fetch team');

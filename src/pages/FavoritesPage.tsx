@@ -34,8 +34,8 @@ export default function FavoritesPage() {
     if (editingTeam) {
       updateFavorite(editingTeam, editNotes);
       toast({
-        title: "Notes updated",
-        description: "Your team notes have been saved successfully.",
+        title: "Catatan diperbarui",
+        description: "Catatan tim Anda telah berhasil disimpan.",
       });
       setEditingTeam(null);
       setEditNotes('');
@@ -45,8 +45,8 @@ export default function FavoritesPage() {
   const handleRemoveFavorite = (teamId: number, teamName: string) => {
     removeFavorite(teamId);
     toast({
-      title: "Removed from favorites",
-      description: `${teamName} has been removed from your favorites.`,
+      title: "Dihapus dari favorit",
+      description: `${teamName} telah dihapus dari favorit Anda.`,
     });
   };
 
@@ -70,11 +70,11 @@ export default function FavoritesPage() {
               <Heart className="w-6 h-6 text-primary-foreground" />
             </div>
             <h1 className="text-3xl font-bold bg-gradient-field bg-clip-text text-transparent">
-              My Favorite Teams
+              Tim Favorit Saya
             </h1>
           </div>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Manage your favorite football teams and keep notes about their performance, transfer news, and more.
+            Kelola Tim Sepak Bola Favorit Anda, Catat Kemajuan & Statistik.
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export default function FavoritesPage() {
                 <Heart className="w-5 h-5 text-primary-foreground" />
               </div>
               <p className="text-2xl font-bold text-primary">{favorites.length}</p>
-              <p className="text-sm text-muted-foreground">Favorite Teams</p>
+              <p className="text-sm text-muted-foreground">Tim Favorit</p>
             </CardContent>
           </Card>
           
@@ -98,7 +98,7 @@ export default function FavoritesPage() {
               <p className="text-2xl font-bold text-accent">
                 {favorites.filter(team => team.notes && team.notes.trim()).length}
               </p>
-              <p className="text-sm text-muted-foreground">With Notes</p>
+              <p className="text-sm text-muted-foreground">Dengan catatan</p>
             </CardContent>
           </Card>
           
@@ -110,7 +110,7 @@ export default function FavoritesPage() {
               <p className="text-2xl font-bold text-foreground">
                 {new Set(favorites.map(team => team.country)).size}
               </p>
-              <p className="text-sm text-muted-foreground">Countries</p>
+              <p className="text-sm text-muted-foreground">Negara</p>
             </CardContent>
           </Card>
         </div>
@@ -134,16 +134,16 @@ export default function FavoritesPage() {
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">No favorite teams yet</h3>
+              <h3 className="text-xl font-semibold text-foreground mb-2">Belum ada tim favorit</h3>
               <p className="text-muted-foreground mb-6">
-                Start building your collection by adding teams from the standings pages.
+                Mulailah Membangun Koleksi Anda Dengan Menambahkan Tim Favorit.
               </p>
               <Button 
                 onClick={() => window.history.back()}
                 className="bg-gradient-field hover:shadow-field"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Explore Teams
+                Jelajahi Tim
               </Button>
             </CardContent>
           </Card>
@@ -196,74 +196,82 @@ export default function FavoritesPage() {
                   <CardContent className="py-2">
                     <div className="flex items-center space-x-2 text-xs text-muted-foreground mb-3">
                       <Calendar className="w-3 h-3" />
-                      <span>Added {formatDate(team.dateAdded)}</span>
+                      <span>Tambah {formatDate(team.dateAdded)}</span>
                     </div>
 
                     {team.notes ? (
                       <div className="bg-accent-muted rounded-lg p-3 border border-accent/20">
                         <div className="flex items-center space-x-2 mb-2">
                           <FileText className="w-3 h-3 text-accent" />
-                          <span className="text-xs font-medium text-accent">Notes</span>
+                          <span className="text-xs font-medium text-accent">Catatan</span>
                         </div>
                         <p className="text-sm text-foreground line-clamp-3">{team.notes}</p>
                       </div>
                     ) : (
                       <div className="bg-muted/30 rounded-lg p-3 border border-border/30">
-                        <p className="text-sm text-muted-foreground italic">No notes added yet</p>
+                        <p className="text-sm text-muted-foreground italic">Belum ada catatan yang ditambahkan</p>
                       </div>
                     )}
                   </CardContent>
 
                   <CardFooter className="pt-2 flex space-x-2">
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="flex-1 border-border/50 hover:bg-accent"
-                          onClick={() => handleEditNotes(team.id, team.notes)}
-                        >
-                          <Edit className="w-3 h-3 mr-1" />
-                          {team.notes ? 'Edit' : 'Add'} Notes
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="bg-card/95 backdrop-blur border-border/50">
-                        <DialogHeader>
-                          <DialogTitle className="flex items-center space-x-2">
-                            <img 
-                              src={team.logo} 
-                              alt={`${team.name} logo`}
-                              className="w-6 h-6 object-contain"
+                    <Dialog open={editingTeam === team.id} onOpenChange={(open) => {
+                        if (!open) {
+                          setEditingTeam(null);
+                          setEditNotes('');
+                        }
+                      }}>
+                        <DialogTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1 border-border/50 hover:bg-accent"
+                            onClick={() => handleEditNotes(team.id, team.notes)}
+                          >
+                            <Edit className="w-3 h-3 mr-1" />
+                            {team.notes ? 'Edit' : 'Tambah'} Catatan
+                          </Button>
+                        </DialogTrigger>
+
+                        <DialogContent className="bg-card/95 backdrop-blur border-border/50">
+                          <DialogHeader>
+                            <DialogTitle className="flex items-center space-x-2">
+                              <img 
+                                src={team.logo} 
+                                alt={`${team.name} logo`}
+                                className="w-6 h-6 object-contain"
+                              />
+                              <span>{team.name} Catatan</span>
+                            </DialogTitle>
+                          </DialogHeader>
+
+                          <div className="space-y-4">
+                            <Textarea
+                              placeholder="Tambahkan catatan Anda tentang tim ini... (transfer, kinerja, berita, dll.)"
+                              value={editNotes}
+                              onChange={(e) => setEditNotes(e.target.value)}
+                              rows={4}
+                              className="bg-background/50 border-border/50 focus:border-primary"
                             />
-                            <span>{team.name} Notes</span>
-                          </DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <Textarea
-                            placeholder="Add your notes about this team... (transfers, performance, news, etc.)"
-                            value={editNotes}
-                            onChange={(e) => setEditNotes(e.target.value)}
-                            rows={4}
-                            className="bg-background/50 border-border/50 focus:border-primary"
-                          />
-                          <div className="flex space-x-2">
-                            <Button 
-                              onClick={handleSaveNotes}
-                              className="flex-1 bg-gradient-field hover:shadow-field"
-                            >
-                              Save Notes
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              onClick={() => setEditingTeam(null)}
-                              className="border-border/50"
-                            >
-                              Cancel
-                            </Button>
+                            <div className="flex space-x-2">
+                              <Button 
+                                onClick={handleSaveNotes}
+                                className="flex-1 bg-gradient-field hover:shadow-field"
+                              >
+                                Simpan Catatan
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                onClick={() => setEditingTeam(null)}
+                                className="border-border/50"
+                              >
+                                Batal
+                              </Button>
+                            </div>
                           </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                        </DialogContent>
+                      </Dialog>
+
 
                     <Button 
                       variant="outline" 
@@ -281,13 +289,13 @@ export default function FavoritesPage() {
             {filteredFavorites.length === 0 && searchQuery && (
               <Card className="bg-card/50 backdrop-blur border-border/50">
                 <CardContent className="p-8 text-center">
-                  <p className="text-muted-foreground">No teams found matching your search.</p>
+                  <p className="text-muted-foreground">Tidak ada tim yang cocok dengan pencarian Anda.</p>
                   <Button 
                     variant="outline" 
                     onClick={() => setSearchQuery('')}
                     className="mt-4 border-border/50"
                   >
-                    Clear Search
+                    Hapus Pencarian
                   </Button>
                 </CardContent>
               </Card>
