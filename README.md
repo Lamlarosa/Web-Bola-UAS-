@@ -77,4 +77,4 @@
         -Buat file .env dan tambahkan API Key : VITE_API_KEY=api_key_anda
         -Jalankan aplikasi, ketik "npm run dev"
 
-6. Link live demo ""
+6. Link live demo "https://web-bola-uas.vercel.app/"
